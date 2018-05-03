@@ -17,7 +17,19 @@ int main() {
 
 	myArray.print();
 
-	myArray.printSize();
+	std::cout << "Cantidad de elementos: " << myArray.totalSize() << std::endl;
+
+	int value;
+	if (myArray.getElement(4, value))
+	{
+		std::cout << "Elemento en posicion 4: " << value << std::endl;
+	}
+	
+	int newValue;
+	if (myArray.getElement(21, newValue))
+	{
+		std::cout << "Elemento en posicion 21: " << newValue << std::endl;
+	}
 
 	int flag;
 	std::cin >> flag;

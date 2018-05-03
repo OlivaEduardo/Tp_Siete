@@ -10,6 +10,7 @@ class StaticArray
 {
 private:
 	const index size;
+	index elements;
 	T* arr;
 public:
 	//Constructor function
@@ -17,16 +18,18 @@ public:
 		: size(arraySize)
 	{
 		arr = new T[size]();
+		elements = 0;
 	}
 
 	//Copy constructor
 	StaticArray(T& array)
-		: size(array.size)
+		: size(array.size), 
+		elements(array.elements)
 	{
 		arr = new T[size];
 		for (index i = 0; i <= size; ++i)
 		{
-			if (&array[i] != nullptr)
+			if (i < elements)
 				arr[i] = array[i];
 		}
 	}
@@ -38,72 +41,59 @@ public:
 	}
 
 	//Insertion function
-	void insert(const T element)
+	void insert(const T& value)
 	{
-		//Find the last element
-		index lastEleIndex = this->totalSize();
-
-		//Insertion
-		if (arr == nullptr)
+		if (elements < size)
 		{
-			arr[0] = element;
-			std::cout << "Primera insercion" << std::endl;
-		}
-		else if (lastEleIndex + 1 <= size)
-		{
-			arr[lastEleIndex + 1] = element;
-			std::cout << "Insercion correcta. Indice: " << lastEleIndex + 1 << std::endl;
+			arr[elements] = value;
+			++elements;
+			std::cout << "Insercion correcta." << std::endl;
 		}
 		else
 		{
-			std::cout << "Insercion no realizada. Array completo." << std::endl;
+			std::cout << "Insercion fallida. Array completo." << std::endl;
 		}
 	}
 
 	//Deletion function
 	void deleteLast()
 	{
-		//Find the last element
-		index lastEleIndex = this->totalSize();
-
-		//Deletion
-		if (lastEleIndex >= 0 && lastEleIndex <= size)
+		if (elements > 0 && elements <= size)
 		{
-			arr[lastEleIndex] = (T)nullptr;
-			std::cout << "Borrado correcto." << std::endl;
+			delete arr[elements - 1];
+			--elements;
 		}
 		else
 		{
-			std::cout << "Operacion no realizada. Array vacio" << std::endl;
+			std::cout << "Borrado fallido. Array vacio." << std::endl;
 		}
 	}
 
 	//Get an element at designated index
-	T getElement(index pos)
+	bool getElement(index pos, T& valueStorage)
 	{
-		if (arr[pos] != (T)nullptr)
+		if (pos < elements)
 		{
-			return arr[pos];
+			valueStorage = arr[pos];
+			return true;
 		}
 		else
 		{
 			std::cout << "Elemento invalido." << std::endl;
-			return (T)nullptr;
+			return false;
 		}
 	}
 
 	//Reverse elements order in the array
 	void reverse()
 	{
-		index elements = this->totalSize();
-
-		if (elements > 0)
+		if (elements > 0 && elements <= size)
 		{
 			for (index i = 0; i < elements - i; ++i)
 			{
 				T aux = arr[i];
-				arr[i] = arr[elements - i];
-				arr[elements - i] = aux;
+				arr[i] = arr[elements - 1 - i];
+				arr[elements -1 - i] = aux;
 			}
 		}
 	}
@@ -111,59 +101,42 @@ public:
 	//Print array content
 	void print()
 	{
-		index elements = this->totalSize();
-
-		for (index i = 0; i <= elements; ++i)
-			std::cout << arr[i] << std::endl;
+		if (elements > 0 && elements <= size)
+		{
+			for (index i = 0; i < elements; ++i)
+				std::cout << arr[i] << std::endl;
+		}
+		else
+		{
+			std::cout << "Array vacio o invalido" << std::endl;
+		}
 	}
 
 	//Elements count. Returns 0 if the array is empty.
 	index totalSize()
 	{
-		if (arr == nullptr)
-			return 0;
-		else
-		{
-			for (index i = 0; i <= size; ++i)
-			{
-				if (arr[i] == (T)nullptr)
-					return i -1 ;
-			}
-		}
-		return size;
+		return elements;
 	}
 
 	//Space available to be fill
 	index availableSize()
 	{
-		index elements = this->totalSize();
-		
-		if (elements <= 0)
-			return 0;
-		else
-			return size - elements;
+		return size - elements;
 	}
 
 	//Swap two elements in the array
 	void swap(const index firstIndex, const index secondIndex)
 	{
-		index elements = this->totalSize();
 
-		if ((firstIndex >= 0 && firstIndex <= elements) && (secondIndex >= 0 && secondIndex <= elements))
+		if (elements > 0 && elements <= size)
 		{
-			T aux = arr[firstIndex];
-			arr[firstIndex] = arr[secondIndex];
-			arr[secondIndex] = aux;
+			if ((firstIndex >= 0 && firstIndex <= elements) && (secondIndex >= 0 && secondIndex <= elements))
+			{
+				T aux = arr[firstIndex];
+				arr[firstIndex] = arr[secondIndex];
+				arr[secondIndex] = aux;
+			}
 		}
-	}
-
-
-
-
-	void printSize()
-	{
-		index x = this->totalSize();
-		std::cout << x << std::endl;
 	}
 };
 
